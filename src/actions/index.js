@@ -15,4 +15,9 @@ export const actionsWallet = (wallet) => ({
   wallet,
 });
 
+export const actionsCurrency = (currency) => ({
+  type: 'getCurrency',
+  currency,
+});
+
 // export default actions;
