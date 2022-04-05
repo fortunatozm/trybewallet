@@ -5,9 +5,14 @@
 //   user: 'fortunato',
 // };
 
-const actions = (user) => ({
+export const actions = (user) => ({
   type: 'getEmail',
   user,
 });
 
-export default actions;
+export const actionsWallet = (wallet) => ({
+  type: 'getWallet',
+  wallet,
+});
+
+// export default actions;
