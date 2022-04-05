@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux'; // sempre que precisar conecar o EG com o componente
-import actions from '../actions';
+import { actions } from '../actions';
 
 class Login extends React.Component {
   constructor() {
