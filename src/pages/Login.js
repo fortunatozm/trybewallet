@@ -43,9 +43,6 @@ class Login extends React.Component {
 
   render() {
     const { email, senha, validationLogin } = this.state;
-    // const { prop1, prop2 } = this.props;
-    // console.log(prop1, prop2);
-    // console.log(emailHover, senha, email, validationLogin);
     return (
       <div>
         Login:
