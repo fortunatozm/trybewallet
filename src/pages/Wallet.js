@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import PropTypes, { string } from 'prop-types';
 import { actionsCurrency } from '../actions';
 
 class Wallet extends React.Component {
@@ -11,7 +11,6 @@ class Wallet extends React.Component {
 
   render() {
     const { email, currencyM } = this.props;
-    console.log('Nova', currencyM);
     return (
       <div>
         TrybeWallet
@@ -33,6 +32,8 @@ class Wallet extends React.Component {
 
 Wallet.propTypes = {
   email: PropTypes.string.isRequired,
+  currencyM: PropTypes.arrayOf(string).isRequired,
+  currencyD: PropTypes.func.isRequired,
   // wallet: PropTypes.number.isRequired,
   // currency: PropTypes.string.isRequired,
 };
