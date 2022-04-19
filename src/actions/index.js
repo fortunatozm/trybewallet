@@ -30,5 +30,3 @@ export const actionsWallet = (wallet) => ({
 });
 
 export const actionsCurrency = () => requitionDispactch;
-
-// export default actions;

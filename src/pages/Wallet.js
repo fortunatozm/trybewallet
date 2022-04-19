@@ -1,16 +1,59 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes, { string } from 'prop-types';
-import { actionsCurrency } from '../actions';
+import { actionsCurrency, actionsWallet } from '../actions';
+
+const alimentacao = 'Alimentação';
 
 class Wallet extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      valor: '',
+      moeda: 'USD',
+      metPg: 'Dinheiro',
+      categoria: alimentacao,
+      descricao: '',
+    };
+    this.hendleClick = this.hendleClick.bind(this);
+    this.hendleChange = this.hendleChange.bind(this);
+  }
+
   componentDidMount() {
     const { currencyD } = this.props;
     currencyD();
   }
 
+  hendleChange({ target }) {
+    const values = target.value;
+    this.setState({
+      [target.name]: values,
+    });
+  }
+
+  hendleClick() {
+    const { valor, moeda, metPg, categoria, descricao } = this.state;
+    // const list = [];
+    const data = { valor, moeda, metPg, categoria, descricao };
+    // list.push(data);
+    const { walletD } = this.props;
+    walletD(data);
+    console.log(valor, metPg, categoria, descricao, moeda);
+    console.log(data);
+
+    this.setState({
+      valor: '',
+      moeda: 'USD',
+      metPg: 'Dinheiro',
+      categoria: alimentacao,
+      descricao: '',
+    });
+  }
+
   render() {
     const { email, currencyM } = this.props;
+    const { valor, metPg, categoria, descricao, moeda } = this.state;
+    console.log(valor, metPg, categoria, descricao, moeda);
     return (
       <div>
         TrybeWallet
@@ -29,14 +72,27 @@ class Wallet extends React.Component {
         <section>
           <label htmlFor="valor">
             Valor:
-            <input id="valor" data-testid="value-input" />
+            <input
+              type="number"
+              name="valor"
+              value={ valor }
+              onChange={ this.hendleChange }
+              id="valor"
+              data-testid="value-input"
+            />
           </label>
 
           <label htmlFor="moeda">
             Moeda:
-            <select id="moeda" data-testid="currency-input">
+            <select
+              id="moeda"
+              data-testid="currency-input"
+              name="moeda"
+              onChange={ this.hendleChange }
+              value={ moeda }
+            >
               { currencyM.map((currency) => (
-                <option value={ currency } key={ Math.random() }>
+                <option key={ Math.random() }>
                   { currency }
                 </option>
               )) }
@@ -45,29 +101,85 @@ class Wallet extends React.Component {
 
           <label htmlFor="metodopag">
             Método de Pagamento:
-            <select id="metodopag" data-testid="method-input">
-              <option value="Dinheiro">Dinheiro</option>
-              <option value="Cartão de crédito">Cartão de crédito</option>
-              <option value="Cartão de débito">Cartão de débito</option>
+            <select
+              id="metodopag"
+              name="metPg"
+              onChange={ this.hendleChange }
+              value={ metPg }
+              data-testid="method-input"
+            >
+              <option>Dinheiro</option>
+              <option>Cartão de crédito</option>
+              <option>Cartão de débito</option>
             </select>
           </label>
 
           <label htmlFor="categoria">
-            Método de Pagamento:
-            <select id="categoria" data-testid="tag-input">
-              <option value="Alimentação">Alimentação</option>
-              <option value="Lazer">Lazer</option>
-              <option value="Trabalho">Trabalho</option>
-              <option value="Transporte">Transporte</option>
-              <option value="Saúde">Saúde</option>
+            Categoria:
+            <select
+              id="categoria"
+              name="categoria"
+              value={ categoria }
+              data-testid="tag-input"
+              onChange={ this.hendleChange }
+            >
+              <option>Alimentação</option>
+              <option>Lazer</option>
+              <option>Trabalho</option>
+              <option>Transporte</option>
+              <option>Saúde</option>
             </select>
           </label>
 
           <label htmlFor="descricao">
             Descrição
-            <input id="descricao" data-testid="description-input" />
+            <input
+              type="text"
+              name="descricao"
+              value={ descricao }
+              onChange={ this.hendleChange }
+              id="descricao"
+              data-testid="description-input"
+            />
           </label>
 
+          <button type="button" onClick={ this.hendleClick }>
+            Adicionar despesa
+          </button>
+
+        </section>
+        <section>
+          <table>
+            <tr>
+              <th>
+                Descrição
+              </th>
+              <th>
+                Tag
+              </th>
+              <th>
+                Método de pagamento
+              </th>
+              <th>
+                Valor
+              </th>
+              <th>
+                Moeda
+              </th>
+              <th>
+                Câmbio utilizado
+              </th>
+              <th>
+                Valor convertido
+              </th>
+              <th>
+                Moeda de conversão
+              </th>
+              <th>
+                Editar/Excluir
+              </th>
+            </tr>
+          </table>
         </section>
       </div>);
   }
@@ -77,12 +189,14 @@ Wallet.propTypes = {
   email: PropTypes.string.isRequired,
   currencyM: PropTypes.arrayOf(string).isRequired,
   currencyD: PropTypes.func.isRequired,
+  walletD: PropTypes.func.isRequired,
   // wallet: PropTypes.number.isRequired,
   // currency: PropTypes.string.isRequired,
 };
 
 const mapDispatchToProps = (dispatch) => ({
   currencyD: () => dispatch(actionsCurrency()),
+  walletD: (dados) => dispatch(actionsWallet(dados)),
 });
 
 const mapStateToProps = (state) => (
