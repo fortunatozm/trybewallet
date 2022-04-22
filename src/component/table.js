@@ -1,4 +1,5 @@
 import React from 'react';
+import Proptypes, { shape } from 'prop-types';
 
 class Table extends React.Component {
   render() {
@@ -73,5 +74,9 @@ class Table extends React.Component {
     );
   }
 }
+
+Table.propTypes = {
+  wallet: Proptypes.arrayOf(shape()).isRequired,
+};
 
 export default Table;
