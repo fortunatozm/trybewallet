@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes, { string } from 'prop-types';
 import { requisitionCurrencySucess,
   actionsWallet, requisitionCotacoesSucess } from '../actions';
+import Table from '../component/table';
 
 const alimentacao = 'Alimentação';
 
@@ -40,12 +41,9 @@ class Wallet extends React.Component {
   async hendleClick() {
     const { valor, moeda, metPg, categoria, descricao, identity } = this.state;
     const { walletD, cotacoesD } = this.props;
-    // const { cotacoesD } = this.props;
     const answer = await fetch('https://economia.awesomeapi.com.br/json/all');
     const response = await answer.json();
     cotacoesD(response);
-    // cotacoesD();
-    // const moedaCotada = cotacoesM[moeda];
     const moedaCotada = response;
     const data = {
       id: identity,
@@ -57,7 +55,6 @@ class Wallet extends React.Component {
       exchangeRates: moedaCotada,
     };
     walletD(data);
-
     this.setState({
       valor: 0,
       moeda: 'USD',
@@ -89,7 +86,6 @@ class Wallet extends React.Component {
               )).toFixed(2) }
           </span>
           <span data-testid="header-currency-field">
-            {/* { currencyM[0] } */}
             BRL
           </span>
         </header>
@@ -173,92 +169,24 @@ class Wallet extends React.Component {
 
         </section>
         <section>
-          <table>
-            <tr>
-              <th>
-                Descrição
-              </th>
-              <th>
-                Tag
-              </th>
-              <th>
-                Método de pagamento
-              </th>
-              <th>
-                Valor
-              </th>
-              <th>
-                Moeda
-              </th>
-              <th>
-                Câmbio utilizado
-              </th>
-              <th>
-                Valor convertido
-              </th>
-              <th>
-                Moeda de conversão
-              </th>
-              <th>
-                Editar/Excluir
-              </th>
-            </tr>
-            { wallet.map((addData) => (
-              <tr key={ addData.id }>
-                <td>
-                  { addData.description }
-                </td>
-                <td>
-                  { addData.tag }
-                </td>
-                <td>
-                  { addData.method }
-                </td>
-                <td>
-                  { (parseFloat(addData.value)).toFixed(2) }
-                </td>
-                <td>
-                  { (addData.exchangeRates[addData.currency].name).split('/')[0] }
-                </td>
-                <td>
-                  { parseFloat(addData.exchangeRates[addData.currency].ask).toFixed(2) }
-                </td>
-                <td>
-                  { (parseFloat(addData.value)
-              * parseFloat((addData.exchangeRates[addData.currency].ask))).toFixed(2) }
-                </td>
-                <td>
-                  Real
-                </td>
-                <td>
-                  <button type="button">Editar</button>
-                  <button type="button">Excluir</button>
-                </td>
-              </tr>
-            )) }
-          </table>
+          { wallet.length === 0 ? undefined : <Table wallet={ wallet } /> }
         </section>
       </div>);
   }
 }
-
 Wallet.propTypes = {
   email: PropTypes.string.isRequired,
   currencyM: PropTypes.arrayOf(string).isRequired,
   currencyD: PropTypes.func.isRequired,
   walletD: PropTypes.func.isRequired,
   cotacoesD: PropTypes.func.isRequired,
-  // cotacoesM: PropTypes.shape().isRequired,
   wallet: PropTypes.shape().isRequired,
-  // currency: PropTypes.string.isRequired,
 };
-
 const mapDispatchToProps = (dispatch) => ({
   currencyD: (data) => dispatch(requisitionCurrencySucess(data)),
   walletD: (data) => dispatch(actionsWallet(data)),
   cotacoesD: (data) => dispatch(requisitionCotacoesSucess(data)),
 });
-
 const mapStateToProps = (state) => (
   {
     email: state.user.email,
@@ -267,5 +195,4 @@ const mapStateToProps = (state) => (
     cotacoesM: state.wallet.lastCotacoes,
   }
 );
-
 export default connect(mapStateToProps, mapDispatchToProps)(Wallet);
