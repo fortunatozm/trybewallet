@@ -39,7 +39,7 @@ class Wallet extends React.Component {
 
   butClick({ target }) {
     const valores = target.id;
-    const { walletD, newWallet, wallet } = this.props;
+    const { wallet } = this.props;
     const atual = wallet.filter((at) => at.id !== Number(valores));
     console.log(atual);
     console.log(typeof (valores));
