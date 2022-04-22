@@ -35,6 +35,11 @@ export const actionsWallet = (wallet) => ({
   wallet,
 });
 
+export const actionsNewWallet = (newWallet) => ({
+  type: 'getNewWallet',
+  newWallet,
+});
+
 // export const actionsCurrency = () => requitionDispactch;
 
 // export const actionsCotacoes = () => requitionDispactch;

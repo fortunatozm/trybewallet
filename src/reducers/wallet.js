@@ -15,6 +15,8 @@ const walletReducer = (state = INITIAL_STATE, actions) => {
     return { ...state, expenses: [...state.expenses, actions.wallet] };
   case 'getCotacoes':
     return { ...state, lastCotacoes: actions.cotacoes };
+  case 'getNewWallet':
+    return { ...state, expenses: actions.newWallet };
   default:
     return state;
   }

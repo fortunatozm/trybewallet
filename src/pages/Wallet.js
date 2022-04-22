@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes, { string } from 'prop-types';
-import { requisitionCurrencySucess,
+import { requisitionCurrencySucess, actionsNewWallet,
   actionsWallet, requisitionCotacoesSucess } from '../actions';
 import Table from '../component/table';
 
@@ -20,11 +20,10 @@ class Wallet extends React.Component {
     };
     this.hendleClick = this.hendleClick.bind(this);
     this.hendleChange = this.hendleChange.bind(this);
+    this.butClick = this.butClick.bind(this);
   }
 
   async componentDidMount() {
-    // const { currencyD } = this.props;
-    // currencyD();
     const { currencyD } = this.props;
     const answer = await fetch('https://economia.awesomeapi.com.br/json/all');
     const response = await answer.json();
@@ -36,6 +35,15 @@ class Wallet extends React.Component {
     this.setState({
       [target.name]: values,
     });
+  }
+
+  butClick({ target }) {
+    const valores = target.id;
+    const { walletD, newWallet, wallet } = this.props;
+    const atual = wallet.filter((at) => at.id !== Number(valores));
+    console.log(atual);
+    console.log(typeof (valores));
+    newWallet(atual);
   }
 
   async hendleClick() {
@@ -68,8 +76,7 @@ class Wallet extends React.Component {
   render() {
     const { email, currencyM, wallet } = this.props;
     const { valor, metPg, categoria, descricao, moeda } = this.state;
-    console.log(valor, metPg, categoria, descricao, moeda);
-    console.log(wallet);
+
     return (
       <div>
         TrybeWallet
@@ -79,7 +86,7 @@ class Wallet extends React.Component {
           </span>
           <span data-testid="total-field">
             {/* 0 */}
-            { wallet.length === 0 ? 0
+            { wallet.length === 0 || wallet === undefined ? 0
               : (wallet.map((wal) => parseFloat(wal.value)
               * parseFloat((wal.exchangeRates[wal.currency].ask))).reduce(
                 (acc, curr) => acc + curr,
@@ -169,7 +176,10 @@ class Wallet extends React.Component {
 
         </section>
         <section>
-          { wallet.length === 0 ? undefined : <Table wallet={ wallet } /> }
+          { wallet.length === 0 && wallet === undefined ? undefined : (<Table
+            butClick={ this.butClick }
+            wallet={ wallet }
+          />) }
         </section>
       </div>);
   }
@@ -180,11 +190,12 @@ Wallet.propTypes = {
   currencyD: PropTypes.func.isRequired,
   walletD: PropTypes.func.isRequired,
   cotacoesD: PropTypes.func.isRequired,
-  wallet: PropTypes.shape().isRequired,
+  wallet: PropTypes.arrayOf(string).isRequired,
 };
 const mapDispatchToProps = (dispatch) => ({
   currencyD: (data) => dispatch(requisitionCurrencySucess(data)),
   walletD: (data) => dispatch(actionsWallet(data)),
+  newWallet: (data) => dispatch(actionsNewWallet(data)),
   cotacoesD: (data) => dispatch(requisitionCotacoesSucess(data)),
 });
 const mapStateToProps = (state) => (
