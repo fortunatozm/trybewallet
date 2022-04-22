@@ -1,7 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes, { string } from 'prop-types';
-import { requisitionCurrencySucess, actionsWallet, requisitionCotacoesSucess } from '../actions';
+import { requisitionCurrencySucess,
+  actionsWallet, requisitionCotacoesSucess } from '../actions';
 
 const alimentacao = 'Alimentação';
 
@@ -45,7 +46,7 @@ class Wallet extends React.Component {
     cotacoesD(response);
     // cotacoesD();
     // const moedaCotada = cotacoesM[moeda];
-    const moedaCotada = response[moeda];
+    const moedaCotada = response;
     const data = {
       id: identity,
       value: valor,
@@ -85,9 +86,9 @@ class Wallet extends React.Component {
             {/* 0 */}
             { wallet.length === 0 ? 0
               : (wallet.map((wal) => parseFloat(wal.value)
-              * parseFloat(wal.exchangeRates.ask)).reduce(
+              * parseFloat((wal.exchangeRates[wal.currency].ask))).reduce(
                 (acc, curr) => acc + curr,
-              )) }
+              )).toFixed(2) }
           </span>
           <span data-testid="header-currency-field">
             {/* { currencyM[0] } */}
