@@ -39,7 +39,7 @@ class Wallet extends React.Component {
 
   butClick({ target }) {
     const valores = target.id;
-    const { wallet } = this.props;
+    const { newWallet, wallet } = this.props;
     const atual = wallet.filter((at) => at.id !== Number(valores));
     console.log(atual);
     console.log(typeof (valores));
@@ -189,6 +189,7 @@ Wallet.propTypes = {
   currencyM: PropTypes.arrayOf(string).isRequired,
   currencyD: PropTypes.func.isRequired,
   walletD: PropTypes.func.isRequired,
+  newWallet: PropTypes.func.isRequired,
   cotacoesD: PropTypes.func.isRequired,
   wallet: PropTypes.arrayOf(string).isRequired,
 };

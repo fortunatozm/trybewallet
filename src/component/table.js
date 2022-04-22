@@ -7,37 +7,37 @@ class Table extends React.Component {
     return (
       <section>
         <table>
-          <thead>
-            <tr>
-              <th>
-                Descrição
-              </th>
-              <th>
-                Tag
-              </th>
-              <th>
-                Método de pagamento
-              </th>
-              <th>
-                Valor
-              </th>
-              <th>
-                Moeda
-              </th>
-              <th>
-                Câmbio utilizado
-              </th>
-              <th>
-                Valor convertido
-              </th>
-              <th>
-                Moeda de conversão
-              </th>
-              <th>
-                Editar/Excluir
-              </th>
-            </tr>
-          </thead>
+          {/* <thead> */}
+          <tr>
+            <th>
+              Descrição
+            </th>
+            <th>
+              Tag
+            </th>
+            <th>
+              Método de pagamento
+            </th>
+            <th>
+              Valor
+            </th>
+            <th>
+              Moeda
+            </th>
+            <th>
+              Câmbio utilizado
+            </th>
+            <th>
+              Valor convertido
+            </th>
+            <th>
+              Moeda de conversão
+            </th>
+            <th>
+              Editar/Excluir
+            </th>
+          </tr>
+          {/* </thead> */}
           { wallet.length === 0 || wallet === undefined ? undefined : (
             wallet.map((addData) => (
               <tr key={ addData.id }>
