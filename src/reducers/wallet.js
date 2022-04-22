@@ -3,6 +3,7 @@
 const INITIAL_STATE = {
   currencies: ['BRL'],
   expenses: [],
+  lastCotacoes: {},
 };
 
 const walletReducer = (state = INITIAL_STATE, actions) => {
@@ -11,7 +12,9 @@ const walletReducer = (state = INITIAL_STATE, actions) => {
     return { ...state,
       currencies: (Object.keys(actions.currency)).filter((val) => val !== 'USDT') };
   case 'getWallet':
-    return { ...state, expenses: actions.wallet };
+    return { ...state, expenses: [...state.expenses, actions.wallet] };
+  case 'getCotacoes':
+    return { ...state, lastCotacoes: actions.cotacoes };
   default:
     return state;
   }

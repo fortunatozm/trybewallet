@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes, { string } from 'prop-types';
-import { actionsCurrency, actionsWallet } from '../actions';
+import { requisitionCurrencySucess, actionsWallet, requisitionCotacoesSucess } from '../actions';
 
 const alimentacao = 'Alimentação';
 
@@ -9,19 +9,24 @@ class Wallet extends React.Component {
   constructor() {
     super();
     this.state = {
-      valor: '',
+      valor: 0,
       moeda: 'USD',
       metPg: 'Dinheiro',
       categoria: alimentacao,
       descricao: '',
+      identity: 0,
     };
     this.hendleClick = this.hendleClick.bind(this);
     this.hendleChange = this.hendleChange.bind(this);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    // const { currencyD } = this.props;
+    // currencyD();
     const { currencyD } = this.props;
-    currencyD();
+    const answer = await fetch('https://economia.awesomeapi.com.br/json/all');
+    const response = await answer.json();
+    currencyD(response);
   }
 
   hendleChange({ target }) {
@@ -31,29 +36,44 @@ class Wallet extends React.Component {
     });
   }
 
-  hendleClick() {
-    const { valor, moeda, metPg, categoria, descricao } = this.state;
-    // const list = [];
-    const data = { valor, moeda, metPg, categoria, descricao };
-    // list.push(data);
-    const { walletD } = this.props;
+  async hendleClick() {
+    const { valor, moeda, metPg, categoria, descricao, identity } = this.state;
+    const { walletD, cotacoesD, cotacoesM } = this.props;
+    // const { cotacoesD } = this.props;
+    const answer = await fetch('https://economia.awesomeapi.com.br/json/all');
+    const response = await answer.json();
+    cotacoesD(response);
+    // cotacoesD();
+    // const moedaCotada = cotacoesM[moeda];
+    const moedaCotada = response[moeda];
+    const data = {
+      id: identity,
+      value: valor,
+      currency: moeda,
+      method: metPg,
+      tag: categoria,
+      description: descricao,
+      exchangeRates: moedaCotada,
+    };
     walletD(data);
-    console.log(valor, metPg, categoria, descricao, moeda);
-    console.log(data);
+    console.log(cotacoesM);
+    console.log(moedaCotada);
 
     this.setState({
-      valor: '',
+      valor: 0,
       moeda: 'USD',
       metPg: 'Dinheiro',
       categoria: alimentacao,
       descricao: '',
+      identity: identity + 1,
     });
   }
 
   render() {
-    const { email, currencyM } = this.props;
+    const { email, currencyM, wallet } = this.props;
     const { valor, metPg, categoria, descricao, moeda } = this.state;
     console.log(valor, metPg, categoria, descricao, moeda);
+    console.log(wallet);
     return (
       <div>
         TrybeWallet
@@ -62,11 +82,16 @@ class Wallet extends React.Component {
             { email }
           </span>
           <span data-testid="total-field">
-            0
+            {/* 0 */}
+            { wallet.length === 0 ? 0
+              : (wallet.map((wal) => parseFloat(wal.value)
+              * parseFloat(wal.exchangeRates.ask)).reduce(
+                (acc, curr) => acc + curr,
+              )) }
           </span>
           <span data-testid="header-currency-field">
-            { currencyM[0] }
-            {/* BRL */}
+            {/* { currencyM[0] } */}
+            BRL
           </span>
         </header>
         <section>
@@ -190,13 +215,16 @@ Wallet.propTypes = {
   currencyM: PropTypes.arrayOf(string).isRequired,
   currencyD: PropTypes.func.isRequired,
   walletD: PropTypes.func.isRequired,
-  // wallet: PropTypes.number.isRequired,
+  cotacoesD: PropTypes.func.isRequired,
+  cotacoesM: PropTypes.shape().isRequired,
+  wallet: PropTypes.shape().isRequired,
   // currency: PropTypes.string.isRequired,
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  currencyD: () => dispatch(actionsCurrency()),
-  walletD: (dados) => dispatch(actionsWallet(dados)),
+  currencyD: (data) => dispatch(requisitionCurrencySucess(data)),
+  walletD: (data) => dispatch(actionsWallet(data)),
+  cotacoesD: (data) => dispatch(requisitionCotacoesSucess(data)),
 });
 
 const mapStateToProps = (state) => (
@@ -204,6 +232,7 @@ const mapStateToProps = (state) => (
     email: state.user.email,
     wallet: state.wallet.expenses,
     currencyM: state.wallet.currencies,
+    cotacoesM: state.wallet.lastCotacoes,
   }
 );
 
